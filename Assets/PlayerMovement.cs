@@ -55,16 +55,28 @@ public class PlayerMovement : MonoBehaviour
         if (Mathf.Abs(xInput) > 0)
         {
             body.velocity = new Vector2(xInput * speed, body.velocity.y);
+            float m_localScale = transform.localScale.x;
+            if (m_localScale > 0 && xInput < 0)
+            {
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            }
+            else if (m_localScale < 0 && xInput > 0)
+            {
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            }
         }
     }
 
     void Jump()
     {
-        if (yInput > 0 && grounded)
+        if (Input.GetKey(KeyCode.Space))
         {
-            if (body.velocity.y <= 0.001 && body.velocity.y >= 0)
+            if (grounded)
             {
-                body.velocity = new Vector2(xInput, jumpSpeed);
+                if (body.velocity.y <= 0.001 && body.velocity.y >= 0)
+                {
+                    body.velocity = new Vector2(xInput, jumpSpeed);
+                }
             }
         }
     }

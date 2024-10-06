@@ -19,7 +19,8 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float speed;
-    private float direction;
+    private float directionX;
+    private float directionY;
     private bool hit;
     Renderer m_Renderer;
 
@@ -39,26 +40,32 @@ public class Projectile : MonoBehaviour
     private void Update()
     {
         if (hit) { return; }
-        float movementSpeed = speed * Time.deltaTime * direction;
-        transform.Translate(movementSpeed, 0, 0);
+        float movementSpeedX = speed * Time.deltaTime * directionX;
+        float movementSpeedY = speed * Time.deltaTime * directionY;
+        transform.Translate(movementSpeedX, movementSpeedY, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         hit  = true;
+        Deactivate();
         boxCollider.enabled = false;
     }
 
-    public void SetDirection(float _direction)
+    public void SetDirection(float _directionX, float _directionY)
     {
-        direction = _direction;
+        directionX = _directionX;
+        directionY = _directionY;
         gameObject.SetActive(true);
         hit = false;
         boxCollider.enabled=true;
 
         float localScaleX = transform.localScale.x;
-        if(Mathf.Sign(localScaleX) != _direction) { localScaleX = -localScaleX; }
-        transform.localScale = new Vector3(localScaleX, transform.localScale.y, transform.localScale.x) ;
+        if(Mathf.Sign(localScaleX) != _directionX) 
+        { 
+            localScaleX = -localScaleX; 
+        }
+        transform.localScale = new Vector3(localScaleX, transform.localScale.y, transform.localScale.z) ;
     }
 
     private void Deactivate()

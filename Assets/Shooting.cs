@@ -22,16 +22,23 @@ public class Shooting : MonoBehaviour
     [SerializeField] private float attackCoolDown;
     [SerializeField] private Transform firePoint;
     [SerializeField] private GameObject[] bullets;
+    public float pivot = 0.69f;
     public PlayerMovement playerMovement;
     private float cooldownTimer = Mathf.Infinity;
+    public bool RTPivot = false;
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        firePoint.localPosition = new Vector3(pivot, firePoint.localPosition.y, firePoint.localPosition.z);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (RTPivot)
+        {
+            firePoint.localPosition = new Vector3(pivot, firePoint.localPosition.y, firePoint.localPosition.z);
+        }
         if (Input.GetKey(KeyCode.V) && cooldownTimer > attackCoolDown && playerMovement.canAttak())
         {
             Attack();
@@ -42,9 +49,53 @@ public class Shooting : MonoBehaviour
     private void Attack()
     {
         cooldownTimer = 0;
+        float yInput = Input.GetAxis("Vertical");
+        float xInput = Input.GetAxis("Horizontal");
 
         bullets[FindBullet()].transform.position = firePoint.position;
-        bullets[FindBullet()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));
+
+        firePoint.localPosition = new Vector3(0, 0, firePoint.localPosition.z);
+
+        if (Mathf.Abs(xInput) > 0) 
+        {
+            firePoint.localPosition = new Vector3(pivot, firePoint.localPosition.y, firePoint.localPosition.z);
+        }
+
+        if (yInput > 0)
+        {
+            firePoint.localPosition = new Vector3(firePoint.localPosition.x, pivot, firePoint.localPosition.z);
+        }
+
+        if (yInput < 0)
+        {
+            firePoint.localPosition = new Vector3(firePoint.localPosition.x, -pivot, firePoint.localPosition.z);
+        }
+
+        if(firePoint.localPosition.x == 0 && firePoint.localPosition.y == 0)
+        {
+            firePoint.localPosition = new Vector3(pivot, firePoint.localPosition.y, firePoint.localPosition.z);
+        }
+        
+        if(xInput == 0)
+        {
+            float xDirection = Mathf.Sign(firePoint.localPosition.x);
+            if(firePoint.localPosition.x == 0)
+            {
+                xDirection = 0;
+            }
+            if (Mathf.Sign(transform.localScale.x) > 0)
+            {
+                bullets[FindBullet()].GetComponent<Projectile>().SetDirection(xDirection, firePoint.localPosition.y);
+            }
+            else
+            {
+                bullets[FindBullet()].GetComponent<Projectile>().SetDirection(-xDirection, firePoint.localPosition.y);
+            }
+        }
+        else
+        {
+            bullets[FindBullet()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x), firePoint.localPosition.y);
+        }
     }
 
     private int FindBullet()
