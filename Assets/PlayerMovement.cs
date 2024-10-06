@@ -1,3 +1,18 @@
+/***************************************************************
+*file: DoubleIt.cs
+*author: Sean Butler
+*author: Ahmad Alkadi
+*class: CS 4700 – Game Development
+*assignment: program 3
+*date last modified: 10/6/2024
+*
+*purpose: Charactar movement and condition of what the player can do
+*
+*References:
+*Creator name: Pandemonium, link of the video that was used: https://www.youtube.com/watch?v=PUpC44Q64zY&list=PLgOEwFbvGm5o8hayFB6skAfa8Z-mw4dPV&index=4
+*Creator name: AdamCYounis, link of the video that was used: https://www.youtube.com/watch?v=0-c3ErDzrh8
+*
+****************************************************************/
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -70,5 +85,10 @@ public class PlayerMovement : MonoBehaviour
     void CheckGround()
     {
         grounded = Physics2D.OverlapAreaAll(groundCheck.bounds.min, groundCheck.bounds.max,groundMask).Length > 0;
+    }
+
+    public bool canAttak()
+    {
+        return true;
     }
 }
