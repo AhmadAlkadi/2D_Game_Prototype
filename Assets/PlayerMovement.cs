@@ -1,0 +1,74 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+    public float speed;
+    public float jumpSpeed = 5;
+
+    [Range(0f, 1f)]
+    public float drag;
+    public Rigidbody2D body;
+    public BoxCollider2D groundCheck;
+    public LayerMask groundMask;
+
+
+    public bool grounded;
+
+    float xInput;
+    float yInput;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        GetInput();
+        Movement();
+        Jump();
+    }
+
+    void Movement()
+    {
+        if (Mathf.Abs(xInput) > 0)
+        {
+            body.velocity = new Vector2(xInput * speed, body.velocity.y);
+        }
+    }
+
+    void Jump()
+    {
+        if (yInput > 0 && grounded)
+        {
+            if (body.velocity.y <= 0.001 && body.velocity.y >= 0)
+            {
+                body.velocity = new Vector2(xInput, jumpSpeed);
+            }
+        }
+    }
+
+    void GetInput()
+    {
+        xInput = Input.GetAxis("Horizontal");
+        yInput = Input.GetAxis("Vertical");
+    }
+
+    void FixedUpdate()
+    {
+        CheckGround();
+
+        if(grounded && xInput == 0 && yInput == 0) { body.velocity *= drag; }
+    }
+
+    void CheckGround()
+    {
+        grounded = Physics2D.OverlapAreaAll(groundCheck.bounds.min, groundCheck.bounds.max,groundMask).Length > 0;
+    }
+}
