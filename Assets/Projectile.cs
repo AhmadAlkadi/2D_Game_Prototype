@@ -21,12 +21,18 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float speed;
     private float direction;
     private bool hit;
-    private float lifetime;
+    Renderer m_Renderer;
+
+    private void OnBecameInvisible()
+    {
+        Deactivate();
+    }
 
     private BoxCollider2D boxCollider;
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
+        m_Renderer = GetComponent<Renderer>();
     }
 
     // Update is called once per frame
@@ -35,9 +41,6 @@ public class Projectile : MonoBehaviour
         if (hit) { return; }
         float movementSpeed = speed * Time.deltaTime * direction;
         transform.Translate(movementSpeed, 0, 0);
-
-        lifetime += Time.deltaTime;
-        if(lifetime > 2) { gameObject.SetActive(false); }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -48,7 +51,6 @@ public class Projectile : MonoBehaviour
 
     public void SetDirection(float _direction)
     {
-        lifetime = 0;
         direction = _direction;
         gameObject.SetActive(true);
         hit = false;
