@@ -29,7 +29,7 @@ public class CameraFollow : MonoBehaviour
     private void FixedUpdate()
     {
         var playerViewPortPos = Camera.main.WorldToViewportPoint(target.transform.position);
-        if (playerViewPortPos.x >= moveCamerTriggerValue)
+        if ((playerViewPortPos.x >= moveCamerTriggerValue))
         {
             Follow();
         }
