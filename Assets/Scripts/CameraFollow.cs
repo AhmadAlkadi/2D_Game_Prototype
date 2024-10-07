@@ -47,7 +47,7 @@ public class CameraFollow : MonoBehaviour
             Mathf.Clamp(targetPosition.z, minValue.z, maxValue.z));
 
 
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, targetPosition, smoothFactor * Time.fixedDeltaTime);
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, boundPosition, smoothFactor * Time.fixedDeltaTime);
         transform.position = smoothedPosition;
 
         minValue.x = smoothedPosition.x;
