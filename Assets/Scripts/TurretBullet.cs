@@ -2,7 +2,7 @@
 *file: TurretBullet.cs
 *author: Sean Butler
 *author: Ahmad Alkadi
-*class: CS 4700 – Game Development
+*class: CS 4700 ï¿½ Game Development
 *assignment: program 3
 *date last modified: 10/6/2024
 *
@@ -23,32 +23,40 @@ public class TurretBullet : MonoBehaviour
     private float directionX;
     private float directionY;
     private bool hit;
+    private CircleCollider2D circleCollider;
 
     private void OnBecameInvisible()
     {
         Deactivate();
     }
 
-    private CircleCollider2D boxCollider;
+    private void Start()
+    {
+        gameObject.SetActive(false);
+        circleCollider = gameObject.GetComponent<CircleCollider2D>();
+    }
+
     private void Awake()
     {
-        boxCollider = GameObject.Find("collider").gameObject.GetComponent<CircleCollider2D>();
+        
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if (hit) { return; }
-        float movementSpeedX = speed * Time.deltaTime * directionX;
-        float movementSpeedY = speed * Time.deltaTime * directionY;
-        transform.Translate(movementSpeedX, movementSpeedY, 0);
+        if (!hit)
+        {
+            float movementSpeedX = speed * Time.deltaTime * directionX;
+            float movementSpeedY = speed * Time.deltaTime * directionY;
+            transform.Translate(movementSpeedX, movementSpeedY, 0);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         hit = true;
         Deactivate();
-        boxCollider.enabled = false;
+        circleCollider.enabled = false;
     }
 
     public void SetSpeed(float m_speed)
@@ -62,7 +70,7 @@ public class TurretBullet : MonoBehaviour
         directionY = _directionY;
         gameObject.SetActive(true);
         hit = false;
-        boxCollider.enabled = true;
+        circleCollider.enabled = true;
 
         float localScaleX = transform.localScale.x;
         if (Mathf.Sign(localScaleX) != _directionX)
