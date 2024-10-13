@@ -21,7 +21,7 @@ public class Turret_Targeting : MonoBehaviour
 {
     public GameObject target_position;
     public float detection_distance = 10.0f;
-    public float bullet_distance_to_shoot = 10.0f;
+    public float bullet_tts_seconds = 0.5f;
     public float bullet_speed = 4.0f;
     public int number_of_bullets = 10;
     public float turret_angle_movement = 45.0f;
@@ -31,7 +31,7 @@ public class Turret_Targeting : MonoBehaviour
     private GameObject shootLocation;
     private List<TurretBullet> bullets = new List<TurretBullet>();
     private int last_fixed_rot = 0;
-    private TurretBullet lastBullet = null;
+    private float timeToShootSeconds = 0.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +48,7 @@ public class Turret_Targeting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        timeToShootSeconds += Time.deltaTime;
         var this_obj_position = GetComponent<Transform>();
         var direction = this_obj_position.transform.position - target_position.transform.position;
         var distance = direction.magnitude;
@@ -97,16 +98,12 @@ public class Turret_Targeting : MonoBehaviour
 
     private bool CheckShootTarget()
     {
-        bool shoot_target = true;
-        if (lastBullet != null)
-        {
-            Vector3 last_bullet_direction = this.transform.position - lastBullet.transform.position;
-            float last_bullet_distance = last_bullet_direction.magnitude;
+        bool shoot_target = false;
 
-            if (Mathf.Abs(last_bullet_distance) < bullet_distance_to_shoot)
-            {
-                shoot_target = false;
-            }
+        if (timeToShootSeconds > bullet_tts_seconds)
+        {
+            timeToShootSeconds = 0.0f;
+            shoot_target = true;
         }
 
         return shoot_target;
@@ -116,40 +113,44 @@ public class Turret_Targeting : MonoBehaviour
     {
         if (shoot_target)
         {
-            int index = FindBullet();
+            int index = FindInActiveBullet();
 
-            bullets[index].transform.position = shootLocation.transform.position;
-            bullet_direction.Normalize();
-            bullets[index].SetSpeed(bullet_speed);
+            if (index >= 0)
+            {
+                bullets[index].transform.position = shootLocation.transform.position;
+                bullet_direction.Normalize();
+                bullets[index].SetSpeed(bullet_speed);
 
-            if (bullet_direction.x == 0)
-            {
-                bullets[index].SetDirection(0.0f, Mathf.Sign(bullet_direction.y));
+                if (bullet_direction.x == 0)
+                {
+                    bullets[index].SetDirection(0.0f, Mathf.Sign(bullet_direction.y));
+                }
+                else if (bullet_direction.y == 0)
+                {
+                    bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), 0.0f);
+                }
+                else
+                {
+                    bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), Mathf.Sign(bullet_direction.y));
+                }
             }
-            else if (bullet_direction.y == 0)
-            {
-                bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), 0.0f);
-            }
-            else
-            {
-                bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), Mathf.Sign(bullet_direction.y));
-            }
-
-            lastBullet = bullets[index];
         }
     }
     
-    private int FindBullet()
+    private int FindInActiveBullet()
     {
+        int bullet_index = -1;
+
         for (int i = 0; i < bullets.Count; i++)
         {
             if (!bullets[i].gameObject.activeInHierarchy)
             {
-                return i;
+                bullet_index = i;
+                break;
             }
         }
         
-        return 0;
+        return bullet_index;
     }
-    
+
 }
