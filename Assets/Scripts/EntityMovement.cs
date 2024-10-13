@@ -2,18 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class EntityMovement : MonoBehaviour
 {
     private GameObject cameraLeftColid;
+    private GameObject cameraRightColid;
+    private GameObject edgeRightColid;
+    private GameObject edgeLeftColid;
+    private float jumpHight;
     public GameObject player;
-    public float speed = 2f;
-    public float patrolDistance = 5f;
+    private float speed;
+    private int edgeWalkBack = 0;
+    private bool rightMove;
+    private new Rigidbody2D rigidbody;
 
     private Vector3 startPosition;
     private bool movingLeft = true;
 
-    public void setCameraColid(ref GameObject extraCameraLeftColid)
+    public void setEdgeWalkBack(int edgeWalkBack)
+    {
+        this.edgeWalkBack = edgeWalkBack;
+    }
+
+    public void setJumpHight(ref float newJumpHight)
+    {
+        jumpHight = newJumpHight;
+    }
+
+    public void setSpeed(ref float newSpeed)
+    {
+        speed = newSpeed;
+    }
+
+    public void setEdgeRightColid(ref GameObject newEdgeRightColid)
+    {
+        edgeRightColid = newEdgeRightColid;
+    }
+
+    public void setEdgeLeftColid(ref GameObject newEdgeLeftColid)
+    {
+        edgeLeftColid = newEdgeLeftColid;
+    }
+
+    public void setCameraRightColid(ref GameObject extraCameraRightColid)
+    {
+        cameraRightColid = extraCameraRightColid;
+    }
+
+    public void setCameraLeftColid(ref GameObject extraCameraLeftColid)
     {
         cameraLeftColid = extraCameraLeftColid;
     }
@@ -32,25 +69,60 @@ public class EntityMovement : MonoBehaviour
     {
         if (cameraLeftColid != null)
         {
+            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeRightColid.GetComponent<BoxCollider2D>()))
+            {
+                if (edgeWalkBack == 0)
+                {
+                    rightMove = true;
+                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+                    edgeWalkBack = 1;
+                }
+                if(edgeWalkBack == 1)
+                {
+                    Rigidbody2D EnemyRid = gameObject.GetComponent<Rigidbody2D>();
+                    EnemyRid.AddForce(Vector3.up * jumpHight);
+                }
+            }
+
+            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeLeftColid.GetComponent<BoxCollider2D>()))
+            {
+                rightMove = false;
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            }
+
+            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(cameraRightColid.GetComponent<BoxCollider2D>()))
+            {
+                rightMove = false;
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            }
+
             if (gameObject.GetComponent<BoxCollider2D>().IsTouching(cameraLeftColid.GetComponent<BoxCollider2D>()))
             {
                 //This should make it collide with the left wall of the camera
                 gameObject.SetActive(false);
+                edgeWalkBack = 0;
                 gameObject.transform.position = startPosition;
             }
         }
-        Patrol();
+
+        if (rightMove)
+        {
+            PatrolOpp();
+        }
+        else
+        {
+            Patrol();
+        }
     }
 
     void Patrol()
     {
        transform.Translate(Vector3.left * speed * Time.deltaTime);
     }
-    //public float speed = 1f;
-    //public Vector2 direction = Vector2.left;
-
-    private new Rigidbody2D rigidbody;
-    //private Vector2 velocity;
+    void PatrolOpp()
+    {
+        transform.Translate(Vector3.right * speed * Time.deltaTime);
+    }
 
     private void Awake()
     {
@@ -84,24 +156,4 @@ public class EntityMovement : MonoBehaviour
         var playerBody = player.GetComponent<Rigidbody2D>();
 
     }
-
-
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    collision.enabled = true;
-    //    Debug.Log(collision);
-    //}
-
-    //private void Update()
-    //{
-    //    velocity.x = direction.x * speed;
-    //    velocity.y = Physics2D.gravity.y;
-
-    //    rigidbody.MovePosition(rigidbody.position + velocity * Time.deltaTime);
-    //    if(rigidbody.Raycast(direction))
-    //    {
-    //        direction = -direction;
-    //    }
-    //}
-
 }

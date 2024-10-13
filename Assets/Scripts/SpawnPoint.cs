@@ -4,11 +4,19 @@ using UnityEngine;
 public class SpawnPoint : MonoBehaviour
 {
     public GameObject cameraLeftColid;
+    public GameObject cameraRightColid;
+    public GameObject edgeRightColid;
+    public GameObject edgeLeftColid;
+    public float jumpHight;
+    public float speed;
     public EntityMovement enemy;
     public int numberOfEnemy = 1;
     public float delay = 1f;
     private List<EntityMovement> listOfEnemy;
     private float frameTime;
+    private float randomValue;
+    [Range(0.0f,1.0f)]
+    public float randomValueSet = 0.25f;
 
     private void Start()
     {
@@ -16,7 +24,12 @@ public class SpawnPoint : MonoBehaviour
         for(int i = 0; i< numberOfEnemy; i++)
         {
             EntityMovement newEnemy = Instantiate(enemy);
-            newEnemy.setCameraColid(ref cameraLeftColid);
+            newEnemy.setJumpHight(ref jumpHight);
+            newEnemy.setSpeed(ref speed);
+            newEnemy.setCameraLeftColid(ref cameraLeftColid);
+            newEnemy.setCameraRightColid(ref cameraRightColid);
+            newEnemy.setEdgeRightColid(ref edgeRightColid);
+            newEnemy.setEdgeLeftColid(ref edgeLeftColid);
             //var newEnemyRidgid = newEnemy.GetComponent<Rigidbody2D>();
             newEnemy.gameObject.SetActive(false);
             listOfEnemy.Add(newEnemy);
@@ -35,6 +48,12 @@ public class SpawnPoint : MonoBehaviour
         {
             var currentEnemy = listOfEnemy[enemyIndex];
             currentEnemy.gameObject.SetActive(true);
+            randomValue = Random.value;
+            Debug.Log(randomValue);
+            if (randomValue < randomValueSet)
+            {
+                currentEnemy.setEdgeWalkBack(1);
+            }
             frameTime = 0;
         }
 
