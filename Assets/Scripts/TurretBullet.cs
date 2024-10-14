@@ -20,6 +20,8 @@ using UnityEngine;
 public class TurretBullet : MonoBehaviour
 {
     private float speed;
+    private float rotateSpeed;
+    private Vector3 rotateOffset;
     private float directionX;
     private float directionY;
     private bool hit;
@@ -62,6 +64,21 @@ public class TurretBullet : MonoBehaviour
     public void SetSpeed(float m_speed)
     {
         speed = m_speed;
+    }
+
+    public void SetRotateSpeed(float m_speed)
+    {
+        rotateSpeed = m_speed;
+    }
+
+    public void SetPivotPoint(Vector3 pivotPoint)
+    {
+        rotateOffset = pivotPoint;
+    }
+
+    public void ResetPivotPoint()
+    {
+        rotateOffset = Vector3.zero;
     }
 
     public void SetDirection(float _directionX, float _directionY)
