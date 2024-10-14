@@ -15,6 +15,7 @@ public class gun : MonoBehaviour
 
     public GameObject[] bulletObjects { get; private set; }
     public int numberOfBullets = 20;
+    public GameObject playerDirection;
 
     [SerializeField] private GameObject bulletNormal, bulletMachine, bulletSpread, bulletFlame;
     [SerializeField] private TurretBullet turret_bullet;
@@ -23,10 +24,17 @@ public class gun : MonoBehaviour
     private GameObject shootLocation;
     private float cooldownTimer = Mathf.Infinity;
     private float attackCoolDown = 1.0f;
+    private Vector3 defaultDirection = Vector3.right;
+    private Vector3 gunDirection;
 
     void SetGun(GUN_TYPE gun_type)
     {
         currentGunType = gun_type;
+    }
+
+    public void SetDirection(Vector3 direction)
+    {
+        gunDirection = direction;
     }
 
     // Start is called before the first frame update
@@ -46,6 +54,24 @@ public class gun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float yInput = Input.GetAxis("Vertical") != 0.0f ? Mathf.Sign(Input.GetAxis("Vertical")) : 0.0f;
+        float xInput = Input.GetAxis("Horizontal") != 0.0f ? Mathf.Sign(Input.GetAxis("Horizontal")) : 0.0f;
+
+        gunDirection = new Vector3(xInput, yInput, 0.0f);
+        Vector3 normGunDirection = gunDirection.normalized;
+
+        Vector3 shoot_direction = transform.position - shootLocation.transform.position;
+        shoot_direction.Normalize();
+
+        //float isFlippedY = shoot_direction.x < 0.0f ? normGunDirection.y : -normGunDirection.y;
+        float playerScaleX = playerDirection.transform.localScale.x;
+        float isFlippedY = playerScaleX >= 0.0f ? normGunDirection.y : -normGunDirection.y;
+
+        float rotationRad = Mathf.Atan2(isFlippedY, Mathf.Abs(normGunDirection.x));
+        float rotationDeg = Mathf.Rad2Deg * rotationRad;
+
+        transform.eulerAngles = new Vector3(0.0f, 0.0f, rotationDeg);
+
         if (Input.GetKey(KeyCode.K) && (cooldownTimer > attackCoolDown))
         {
             float fireRate = 10.0f;
@@ -59,27 +85,27 @@ public class gun : MonoBehaviour
             {
                 case GUN_TYPE.NORMAL:
                     attackCoolDown = attackCoolDownNormal;
-                    ShootNormal(Vector3.right, fireRate);
+                    ShootNormal(normGunDirection, fireRate);
                     break;
 
                 case GUN_TYPE.MACHINE:
                     attackCoolDown = attackCoolDownMachine;
-                    ShootMachine(Vector3.right, fireRate);
+                    ShootMachine(normGunDirection, fireRate);
                     break;
 
                 case GUN_TYPE.SPREAD:
                     attackCoolDown = attackCoolDownNormal;
-                    ShootSpread(Vector3.right, fireRate);
+                    ShootSpread(normGunDirection, fireRate);
                     break;
 
                 case GUN_TYPE.FLAME:
                     attackCoolDown = attackCoolDownFlame;
-                    ShootFlame(Vector3.right, fireRate);
+                    ShootFlame(normGunDirection, fireRate);
                     break;
 
                 case GUN_TYPE.LASER:
                     attackCoolDown = attackCoolDownNormal;
-                    ShootLaser(Vector3.right, fireRate);
+                    ShootLaser(normGunDirection, fireRate);
                     break;
             }
 
