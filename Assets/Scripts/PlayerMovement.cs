@@ -29,12 +29,29 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D body;
     public BoxCollider2D groundCheck;
     public LayerMask groundMask;
-
+    private bool hit;
+    private Vector3 startPosition;
+    private bool invincibility;
 
     public bool grounded;
 
     float xInput;
     float yInput;
+
+    public void setStartPosition(Vector3 startPos)
+    {
+        startPosition = startPos;
+        gameObject.transform.position = startPosition;
+    }
+    public void setPlayerHit(bool hit)
+    {
+        this.hit = hit;
+    }
+
+    public void setInvincibility(bool invincibility)
+    {
+        this.invincibility = invincibility;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -45,9 +62,26 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetInput();
-        Movement();
-        Jump();
+        if (invincibility == false)
+        {
+            if (hit == false)
+            {
+                GetInput();
+                Movement();
+                Jump();
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            hit = false;
+            GetInput();
+            Movement();
+            Jump();
+        }
     }
 
     void Movement()

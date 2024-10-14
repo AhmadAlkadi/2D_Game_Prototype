@@ -154,6 +154,58 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &4797032025080116526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2871712854135966480}
+  - component: {fileID: 7361148002498604853}
+  m_Layer: 0
+  m_Name: PlayerSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2871712854135966480
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797032025080116526}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 10.059155}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4220264032527428219}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -9.749315, y: 3.0385334}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7361148002498604853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797032025080116526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56c06ce9af960c47b0e07234a3a0559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  playerLife: 3
+  invTimerLimit: 3
+  lifeCounter: {fileID: 0}
 --- !u!1 &6916108387798300105
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,6 +241,7 @@ Transform:
   - {fileID: 5753865535818728426}
   - {fileID: 2822854977053126690}
   - {fileID: 3976623324831891150}
+  - {fileID: 2871712854135966480}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &2110577144722507686
@@ -283,9 +336,21 @@ PrefabInstance:
       value: SpawnPoint
       objectReference: {fileID: 0}
     - target: {fileID: 3089781324985212090, guid: 02e5ca2f394353548a7e6b1489c65d3b, type: 3}
+      propertyPath: speed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3089781324985212090, guid: 02e5ca2f394353548a7e6b1489c65d3b, type: 3}
+      propertyPath: jumpHight
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3089781324985212090, guid: 02e5ca2f394353548a7e6b1489c65d3b, type: 3}
       propertyPath: cameraLeftColid
       value: 
       objectReference: {fileID: 551670149204712144}
+    - target: {fileID: 3089781324985212090, guid: 02e5ca2f394353548a7e6b1489c65d3b, type: 3}
+      propertyPath: cameraRightColid
+      value: 
+      objectReference: {fileID: 2503456087226719842}
     - target: {fileID: 5494315421035859564, guid: 02e5ca2f394353548a7e6b1489c65d3b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.74

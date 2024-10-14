@@ -11,7 +11,7 @@ public class EntityMovement : MonoBehaviour
     private GameObject edgeRightColid;
     private GameObject edgeLeftColid;
     private float jumpHight;
-    public GameObject player;
+    private GameObject player;
     private float speed;
     private int edgeWalkBack = 0;
     private bool rightMove;
@@ -19,6 +19,11 @@ public class EntityMovement : MonoBehaviour
 
     private Vector3 startPosition;
     private bool movingLeft = true;
+
+    public void setPlayer(ref GameObject player)
+    {
+        this.player = player;
+    }
 
     public void setEdgeWalkBack(int edgeWalkBack)
     {
@@ -62,11 +67,18 @@ public class EntityMovement : MonoBehaviour
 
     void Start()
     {
-        startPosition = transform.position;
+        gameObject.transform.position = startPosition;
     }
 
     void Update()
     {
+
+        if (gameObject.GetComponent<BoxCollider2D>().IsTouching(player.GetComponent<BoxCollider2D>()))
+        {
+            PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+            playerMovement.setPlayerHit(true);
+        }
+
         if (cameraLeftColid != null)
         {
             if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeRightColid.GetComponent<BoxCollider2D>()))
@@ -149,11 +161,5 @@ public class EntityMovement : MonoBehaviour
     {
         rigidbody.velocity = Vector2.zero;
         rigidbody.Sleep();
-    }
-
-    private void PlayerCollision()
-    {
-        var playerBody = player.GetComponent<Rigidbody2D>();
-
     }
 }
