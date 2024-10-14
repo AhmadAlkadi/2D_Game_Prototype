@@ -7,8 +7,9 @@ public class SpawnPoint : MonoBehaviour
     public GameObject cameraRightColid;
     public GameObject edgeRightColid;
     public GameObject edgeLeftColid;
-    public float jumpHight;
-    public float speed;
+    public GameObject player;
+    public float jumpHight = 15;
+    public float speed = 3;
     public EntityMovement enemy;
     public int numberOfEnemy = 1;
     public float delay = 1f;
@@ -24,6 +25,7 @@ public class SpawnPoint : MonoBehaviour
         for(int i = 0; i< numberOfEnemy; i++)
         {
             EntityMovement newEnemy = Instantiate(enemy);
+            newEnemy.setPlayer(ref player);
             newEnemy.setJumpHight(ref jumpHight);
             newEnemy.setSpeed(ref speed);
             newEnemy.setCameraLeftColid(ref cameraLeftColid);
@@ -42,7 +44,7 @@ public class SpawnPoint : MonoBehaviour
         int enemyIndex = FindEnemy();
         foreach (EntityMovement enemy in listOfEnemy)
         {
-            enemy.setStartPosition(this.transform.position);
+            enemy.setStartPosition(transform.position);
         }
         if (enemyIndex > -1 && frameTime > delay)
         {
