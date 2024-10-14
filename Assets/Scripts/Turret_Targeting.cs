@@ -27,9 +27,9 @@ public class Turret_Targeting : MonoBehaviour
     public float turret_angle_movement = 45.0f;
 
     [SerializeField] private TurretBullet turret_bullet;
+    private List<TurretBullet> bullets = new List<TurretBullet>();
     [SerializeField] private List<int> ignoreAngles;
     private GameObject shootLocation;
-    private List<TurretBullet> bullets = new List<TurretBullet>();
     private int last_fixed_rot = 0;
     private float timeToShootSeconds = 0.0f;
 
