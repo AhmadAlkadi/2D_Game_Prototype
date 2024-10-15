@@ -16,6 +16,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineInternal;
 
 public class TurretBullet : MonoBehaviour
 {
@@ -26,6 +27,12 @@ public class TurretBullet : MonoBehaviour
     private float directionY;
     private bool hit;
     private CircleCollider2D circleCollider;
+    private GameObject player;
+
+    public void setPlayer(ref GameObject newplayer)
+    {
+        player = newplayer;
+    }
 
     private void OnBecameInvisible()
     {
@@ -56,6 +63,40 @@ public class TurretBullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (player != null)
+        {
+            if (gameObject.GetComponent<CircleCollider2D>().IsTouching(player.GetComponent<BoxCollider2D>()))
+            {
+                PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+                playerMovement.setPlayerHit(true);
+                hit = true;
+            }
+        }
+
+        if (gameObject.layer == 6)
+        {
+            if (collision.gameObject.layer == 8)
+            {
+                Debug.Log(collision.name);
+                EntityMovement entityMovement = collision.gameObject.GetComponent<EntityMovement>();
+                entityMovement.setFootSoldierHit(true);
+                hit = true;
+            }
+        }
+
+        if (gameObject.layer == 6)
+        {
+            if (collision.gameObject.layer == 10)
+            {
+                Turret_Targeting turret_Targeting = collision.gameObject.GetComponent<Turret_Targeting>();
+                if (turret_Targeting != null)
+                {
+                    turret_Targeting.setTurrentHit(true);
+                    hit = true;
+                }
+            }
+        }
+
         hit = true;
         Deactivate();
         circleCollider.enabled = false;
