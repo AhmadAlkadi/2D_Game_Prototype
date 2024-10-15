@@ -16,13 +16,19 @@ public class EntityMovement : MonoBehaviour
     private int edgeWalkBack = 0;
     private bool rightMove;
     private new Rigidbody2D rigidbody;
+    private bool hit = false;
+
 
     private Vector3 startPosition;
-    private bool movingLeft = true;
 
     public void setPlayer(ref GameObject player)
     {
         this.player = player;
+    }
+
+    public void setFootSoldierHit(bool hit)
+    {
+        this.hit = hit;
     }
 
     public void setEdgeWalkBack(int edgeWalkBack)
@@ -70,60 +76,72 @@ public class EntityMovement : MonoBehaviour
         gameObject.transform.position = startPosition;
     }
 
+    
+
     void Update()
     {
-
-        if (gameObject.GetComponent<BoxCollider2D>().IsTouching(player.GetComponent<BoxCollider2D>()))
+        if (hit)
         {
-            PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
-            playerMovement.setPlayerHit(true);
-        }
-
-        if (cameraLeftColid != null)
-        {
-            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeRightColid.GetComponent<BoxCollider2D>()))
-            {
-                if (edgeWalkBack == 0)
-                {
-                    rightMove = true;
-                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-                    edgeWalkBack = 1;
-                }
-                if(edgeWalkBack == 1)
-                {
-                    Rigidbody2D EnemyRid = gameObject.GetComponent<Rigidbody2D>();
-                    EnemyRid.AddForce(Vector3.up * jumpHight);
-                }
-            }
-
-            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeLeftColid.GetComponent<BoxCollider2D>()))
-            {
-                rightMove = false;
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-            }
-
-            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(cameraRightColid.GetComponent<BoxCollider2D>()))
-            {
-                rightMove = false;
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-            }
-
-            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(cameraLeftColid.GetComponent<BoxCollider2D>()))
-            {
-                //This should make it collide with the left wall of the camera
-                gameObject.SetActive(false);
-                edgeWalkBack = 0;
-                gameObject.transform.position = startPosition;
-            }
-        }
-
-        if (rightMove)
-        {
-            PatrolOpp();
+            gameObject.SetActive(false);
+            edgeWalkBack = 0;
+            gameObject.transform.position = startPosition;
+            hit = false;
         }
         else
         {
-            Patrol();
+
+            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(player.GetComponent<BoxCollider2D>()))
+            {
+                PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+                playerMovement.setPlayerHit(true);
+            }
+
+            if (cameraLeftColid != null)
+            {
+                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeRightColid.GetComponent<BoxCollider2D>()))
+                {
+                    if (edgeWalkBack == 0)
+                    {
+                        rightMove = true;
+                        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+                        edgeWalkBack = 1;
+                    }
+                    if (edgeWalkBack == 1)
+                    {
+                        Rigidbody2D EnemyRid = gameObject.GetComponent<Rigidbody2D>();
+                        EnemyRid.AddForce(Vector3.up * jumpHight);
+                    }
+                }
+
+                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeLeftColid.GetComponent<BoxCollider2D>()))
+                {
+                    rightMove = false;
+                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+                }
+
+                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(cameraRightColid.GetComponent<BoxCollider2D>()))
+                {
+                    rightMove = false;
+                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+                }
+
+                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(cameraLeftColid.GetComponent<BoxCollider2D>()))
+                {
+                    //This should make it collide with the left wall of the camera
+                    gameObject.SetActive(false);
+                    edgeWalkBack = 0;
+                    gameObject.transform.position = startPosition;
+                }
+            }
+
+            if (rightMove)
+            {
+                PatrolOpp();
+            }
+            else
+            {
+                Patrol();
+            }
         }
     }
 

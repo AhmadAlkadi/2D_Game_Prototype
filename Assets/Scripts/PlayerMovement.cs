@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     private bool hit;
     private Vector3 startPosition;
     private bool invincibility;
+    public GameObject turrentEnemy;
 
     public bool grounded;
 

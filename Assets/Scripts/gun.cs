@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,6 +48,7 @@ public class gun : MonoBehaviour
         for (int i=0; i<numberOfBullets; i++)
         {
             var newBullet = Instantiate(turret_bullet);
+            newBullet.gameObject.layer = LayerMask.NameToLayer("Player");
             bullets.Add(newBullet);
         }
     }
@@ -58,6 +60,10 @@ public class gun : MonoBehaviour
         float xInput = Input.GetAxis("Horizontal") != 0.0f ? Mathf.Sign(Input.GetAxis("Horizontal")) : 0.0f;
 
         gunDirection = new Vector3(xInput, yInput, 0.0f);
+        if(gunDirection == Vector3.zero)
+        {
+            gunDirection = shootLocation.transform.position - transform.position;
+        }
         Vector3 normGunDirection = gunDirection.normalized;
 
         Vector3 shoot_direction = transform.position - shootLocation.transform.position;

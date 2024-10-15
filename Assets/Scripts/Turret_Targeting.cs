@@ -25,6 +25,7 @@ public class Turret_Targeting : MonoBehaviour
     public float bullet_speed = 4.0f;
     public int number_of_bullets = 10;
     public float turret_angle_movement = 45.0f;
+    public GameObject player;
 
     [SerializeField] private TurretBullet turret_bullet;
     private List<TurretBullet> bullets = new List<TurretBullet>();
@@ -32,6 +33,15 @@ public class Turret_Targeting : MonoBehaviour
     private GameObject shootLocation;
     private int last_fixed_rot = 0;
     private float timeToShootSeconds = 0.0f;
+    private bool hit;
+    private int Health = 8;
+
+    public void setTurrentHit(bool hit)
+    {
+        this.hit = hit;
+        Health -= 1;
+        Debug.Log(Health);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -39,45 +49,54 @@ public class Turret_Targeting : MonoBehaviour
         const int target_location_child_index = 4; // relies on the target_location gameobject being the 4th child at the moment
         shootLocation = this.transform.GetChild(target_location_child_index).gameObject;
 
+
         for (int i = 0; i < number_of_bullets; i++)
         {
             bullets.Add(Instantiate(turret_bullet));
+            //turret_bullet.setPlayer(ref player);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        timeToShootSeconds += Time.deltaTime;
-        var this_obj_position = GetComponent<Transform>();
-        var direction = this_obj_position.transform.position - target_position.transform.position;
-        var distance = direction.magnitude;
-        direction.Normalize();
-
-        float turret_rotation_rad = Mathf.Atan2(direction.y, direction.x);
-        float turret_rotation_deg = Mathf.Rad2Deg * turret_rotation_rad;
-
-        int fixed_positions = ((int)turret_angle_movement == 0) ? 1 : ((int)turret_angle_movement);   
-
-        int fixed_rot = (int)((turret_rotation_deg / (float)fixed_positions) + 0.5f);
-        bool allow_rotation = CheckAnglesToIgnore(ref fixed_rot);
-
-        turret_rotation_deg = Mathf.Abs((float)fixed_rot * turret_angle_movement);
-        turret_rotation_deg = (direction.y < 0) ? turret_rotation_deg *= -1.0f : turret_rotation_deg;
-
-        if (distance < detection_distance)
+        if(Health <= 0)
         {
-            Vector3 bullet_direction = shootLocation.transform.position - this_obj_position.transform.position;
-            bool shoot_target = CheckShootTarget();
-            ShootTarget(bullet_direction, shoot_target);
-        }
+            gameObject.SetActive(false);
 
-        if (allow_rotation)
-        {
-            last_fixed_rot = fixed_rot;
         }
+        else { 
+            timeToShootSeconds += Time.deltaTime;
+            var this_obj_position = GetComponent<Transform>();
+            var direction = this_obj_position.transform.position - target_position.transform.position;
+            var distance = direction.magnitude;
+            direction.Normalize();
+
+            float turret_rotation_rad = Mathf.Atan2(direction.y, direction.x);
+            float turret_rotation_deg = Mathf.Rad2Deg * turret_rotation_rad;
+
+            int fixed_positions = ((int)turret_angle_movement == 0) ? 1 : ((int)turret_angle_movement);   
+
+            int fixed_rot = (int)((turret_rotation_deg / (float)fixed_positions) + 0.5f);
+            bool allow_rotation = CheckAnglesToIgnore(ref fixed_rot);
+
+            turret_rotation_deg = Mathf.Abs((float)fixed_rot * turret_angle_movement);
+            turret_rotation_deg = (direction.y < 0) ? turret_rotation_deg *= -1.0f : turret_rotation_deg;
+
+            if (distance < detection_distance)
+            {
+                Vector3 bullet_direction = shootLocation.transform.position - this_obj_position.transform.position;
+                bool shoot_target = CheckShootTarget();
+                ShootTarget(bullet_direction, shoot_target);
+            }
+
+            if (allow_rotation)
+            {
+                last_fixed_rot = fixed_rot;
+            }
         
-        this_obj_position.transform.eulerAngles = new Vector3(0.0f, 0.0f, turret_rotation_deg);
+            this_obj_position.transform.eulerAngles = new Vector3(0.0f, 0.0f, turret_rotation_deg);
+        }
     }
 
     private bool CheckAnglesToIgnore(ref int fixed_rot)
@@ -117,6 +136,7 @@ public class Turret_Targeting : MonoBehaviour
 
             if (index >= 0)
             {
+                bullets[index].setPlayer(ref player);
                 bullets[index].transform.position = shootLocation.transform.position;
                 bullet_direction.Normalize();
                 bullets[index].SetSpeed(bullet_speed);
