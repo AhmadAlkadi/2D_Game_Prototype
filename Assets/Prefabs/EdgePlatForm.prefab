@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1154952623164810581}
   - component: {fileID: 7550988991670492660}
   - component: {fileID: 1077278633157853683}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EdgePlatForm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4496340764404144572}
   - component: {fileID: 3316664557776153482}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RightEdgeColider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -219,7 +219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5250439252166377540}
   - component: {fileID: 1044947027733552085}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RightLeftColider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

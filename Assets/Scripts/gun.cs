@@ -28,7 +28,7 @@ public class gun : MonoBehaviour
     private Vector3 defaultDirection = Vector3.right;
     private Vector3 gunDirection;
 
-    void SetGun(GUN_TYPE gun_type)
+    public void SetGun(GUN_TYPE gun_type)
     {
         currentGunType = gun_type;
     }
