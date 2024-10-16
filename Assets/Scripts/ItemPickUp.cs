@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ItemPickUp : MonoBehaviour
 {
-    public enum GUN_TYPE { NORMAL, MACHINE, SPREAD, FLAME, LASER };
+    public enum GUN_TYPE { NORMAL, MACHINE, SPREAD, FLAME, LASER, RAPID };
     public GUN_TYPE itemPickUpType = GUN_TYPE.MACHINE;
     // Start is called before the first frame update
     void Start()
@@ -45,6 +45,10 @@ public class ItemPickUp : MonoBehaviour
 
                     case GUN_TYPE.LASER:
                         currentGun.SetGun(gun.GUN_TYPE.LASER);
+                        break;
+
+                    case GUN_TYPE.RAPID:
+                        currentGun.SetRapidFire(true);
                         break;
                 }
             }

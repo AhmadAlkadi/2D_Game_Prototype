@@ -33,6 +33,11 @@ public class gun : MonoBehaviour
         currentGunType = gun_type;
     }
 
+    public void SetRapidFire(bool allow)
+    {
+        allowRapidFire = allow;
+    }
+
     public void SetDirection(Vector3 direction)
     {
         gunDirection = direction;
