@@ -131,6 +131,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2788126913882187623, guid: b346dbd006fcc044888740e394640412, type: 3}
+      propertyPath: turret_bullet
+      value: 
+      objectReference: {fileID: 1595935538623738303, guid: 9b29b595d211e81429afa97509718385, type: 3}
+    - target: {fileID: 2788126913882187623, guid: b346dbd006fcc044888740e394640412, type: 3}
       propertyPath: currentGunType
       value: 0
       objectReference: {fileID: 0}
@@ -559,7 +563,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3530229794814065421, guid: 326c170e1816b95499cd393b1333feef, type: 3}
       propertyPath: itemPickUpType
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9210237674964960309, guid: 326c170e1816b95499cd393b1333feef, type: 3}
       propertyPath: m_Name

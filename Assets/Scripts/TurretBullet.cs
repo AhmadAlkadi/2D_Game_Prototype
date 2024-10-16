@@ -21,17 +21,22 @@ using UnityEngineInternal;
 public class TurretBullet : MonoBehaviour
 {
     private float speed;
-    private float rotateSpeed;
-    private Vector3 rotateOffset;
+    private float rotationSpeed;
+    private Vector3 offsetPoint;
+    private Vector3 startPoint;
     private float directionX;
     private float directionY;
     private bool hit;
+    private float rotation;
+    private float lastRadius;
+    private float radius;
     private CircleCollider2D circleCollider;
+    private GameObject parentObject;
     private GameObject player;
 
-    public void setPlayer(ref GameObject newplayer)
+    public void setPlayer(ref GameObject newPlayer)
     {
-        player = newplayer;
+        player = newPlayer;
     }
 
     private void OnBecameInvisible()
@@ -41,13 +46,27 @@ public class TurretBullet : MonoBehaviour
 
     private void Start()
     {
-        gameObject.SetActive(false);
-        circleCollider = gameObject.GetComponent<CircleCollider2D>();
     }
 
     private void Awake()
     {
-        
+        offsetPoint = Vector3.zero;
+        rotation = 0.0f;
+        radius = 1.0f;
+        rotationSpeed = 10.0f;
+
+        parentObject = (gameObject.transform.parent != null) ? gameObject.transform.parent.gameObject : null;
+        while (parentObject.transform.parent != null)
+        {
+            parentObject = parentObject.transform.parent.gameObject;
+        }
+
+        circleCollider = GetComponent<CircleCollider2D>();
+
+        parentObject.SetActive(false);
+
+        this.transform.position = new Vector3(parentObject.transform.position.x + radius, parentObject.transform.position.y);
+        lastRadius = radius;
     }
 
     // Update is called once per frame
@@ -55,9 +74,30 @@ public class TurretBullet : MonoBehaviour
     {
         if (!hit)
         {
+            parentObject.transform.Rotate(0.0f, 0.0f, -rotation);
+
+            if ((lastRadius != radius) && (radius != 0.0f))
+            {
+                Vector3 p_pos = parentObject.transform.position;
+                Vector3 c_pos = this.transform.position;
+
+                Vector3 n_pos = c_pos - p_pos;
+                n_pos.Normalize();
+                n_pos *= radius;
+                n_pos += p_pos;
+
+                this.transform.position -= this.transform.position;
+                this.transform.position = n_pos;
+                lastRadius = radius;
+            }
+
+            rotation -= rotationSpeed;
+
             float movementSpeedX = speed * Time.deltaTime * directionX;
             float movementSpeedY = speed * Time.deltaTime * directionY;
-            transform.Translate(movementSpeedX, movementSpeedY, 0);
+
+            parentObject.transform.Translate(movementSpeedX, movementSpeedY, 0.0f);
+            parentObject.transform.Rotate(0.0f, 0.0f, rotation);
         }
     }
 
@@ -109,37 +149,47 @@ public class TurretBullet : MonoBehaviour
 
     public void SetRotateSpeed(float m_speed)
     {
-        rotateSpeed = m_speed;
+        rotationSpeed = m_speed;
     }
 
-    public void SetPivotPoint(Vector3 pivotPoint)
+    public void SetOffsetPoint(Vector3 offsetPoint)
     {
-        rotateOffset = pivotPoint;
+        this.offsetPoint = offsetPoint;
     }
 
-    public void ResetPivotPoint()
+    public void SetPosition(float x, float y)
     {
-        rotateOffset = Vector3.zero;
+        startPoint = new Vector3(x, y);
     }
 
-    public void SetDirection(float _directionX, float _directionY)
+    public void SetRadius(float r)
     {
-        directionX = _directionX;
-        directionY = _directionY;
-        gameObject.SetActive(true);
+        radius = r;
+    }
+
+    public void SetDirection(float x, float y)
+    {
+        directionX = x;
+        directionY = y;
+
+        parentObject.transform.position = new Vector3(startPoint.x + offsetPoint.x, startPoint.y + offsetPoint.y);
+        this.transform.position = new Vector3(parentObject.transform.position.x + radius, parentObject.transform.position.y);
+        
+        parentObject.SetActive(true);
         hit = false;
         circleCollider.enabled = true;
 
         float localScaleX = transform.localScale.x;
-        if (Mathf.Sign(localScaleX) != _directionX)
+        if (Mathf.Sign(localScaleX) != x)
         {
             localScaleX = -localScaleX;
         }
+
         transform.localScale = new Vector3(localScaleX, transform.localScale.y, transform.localScale.z);
     }
 
-    private void Deactivate()
+    public void Deactivate()
     {
-        gameObject.SetActive(false);
+        parentObject.SetActive(false);
     }
 }
