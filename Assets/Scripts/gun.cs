@@ -11,7 +11,13 @@ public class gun : MonoBehaviour
     public float attackCoolDownNormal = 0.5f;
     public float attackCoolDownMachine = 0.07f;
     public float attackCoolDownFlame = 0.35f;
+    public float attackCoolDownLaser = 0.01f;
+    public float fireRate = 10.0f;
     public float rapidFireRate = 1.05f;
+    public int laserLength = 10;
+    public float laserSpacing = 0.15f;
+    [Range(0.0f, 2.0f)]
+    public float spreadShotDirection = 1.0f;
     public bool allowRapidFire = false;
 
     public GameObject[] bulletObjects { get; private set; }
@@ -19,14 +25,17 @@ public class gun : MonoBehaviour
     public GameObject playerDirection;
 
     [SerializeField] private GameObject bulletNormal, bulletMachine, bulletSpread, bulletFlame;
-    [SerializeField] private TurretBullet turret_bullet;
+    [SerializeField] private GameObject turret_bullet;
+    private List<GameObject> pBullets = new List<GameObject>();
     private List<TurretBullet> bullets = new List<TurretBullet>();
+    private List<(int, float)> laserIndexList = new List<(int, float)>();
 
     private GameObject shootLocation;
     private float cooldownTimer = Mathf.Infinity;
     private float attackCoolDown = 1.0f;
-    private Vector3 defaultDirection = Vector3.right;
     private Vector3 gunDirection;
+
+    private GameObject parent;
 
     public void SetGun(GUN_TYPE gun_type)
     {
@@ -46,6 +55,12 @@ public class gun : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        parent = this.gameObject;
+        while (parent.transform.parent != null)
+        {
+            parent = transform.parent.gameObject;
+        }
+
         bulletObjects = new GameObject[] { bulletNormal, bulletMachine, bulletSpread, bulletFlame };
         const int target_location_child_index = 1; // relies on the target_location gameobject being the 4th child at the moment
         shootLocation = this.transform.GetChild(target_location_child_index).gameObject;
@@ -54,7 +69,11 @@ public class gun : MonoBehaviour
         {
             var newBullet = Instantiate(turret_bullet);
             newBullet.gameObject.layer = LayerMask.NameToLayer("Player");
-            bullets.Add(newBullet);
+            pBullets.Add(newBullet);
+
+            var bulletChild = newBullet.transform.GetChild(0).gameObject.GetComponent<TurretBullet>();
+            bulletChild.gameObject.layer = LayerMask.NameToLayer("Player");
+            bullets.Add(bulletChild);
         }
     }
 
@@ -65,16 +84,17 @@ public class gun : MonoBehaviour
         float xInput = Input.GetAxis("Horizontal") != 0.0f ? Mathf.Sign(Input.GetAxis("Horizontal")) : 0.0f;
 
         gunDirection = new Vector3(xInput, yInput, 0.0f);
-        if(gunDirection == Vector3.zero)
+
+        if (gunDirection == Vector3.zero)
         {
             gunDirection = shootLocation.transform.position - transform.position;
         }
+
         Vector3 normGunDirection = gunDirection.normalized;
 
         Vector3 shoot_direction = transform.position - shootLocation.transform.position;
         shoot_direction.Normalize();
 
-        //float isFlippedY = shoot_direction.x < 0.0f ? normGunDirection.y : -normGunDirection.y;
         float playerScaleX = playerDirection.transform.localScale.x;
         float isFlippedY = playerScaleX >= 0.0f ? normGunDirection.y : -normGunDirection.y;
 
@@ -85,38 +105,39 @@ public class gun : MonoBehaviour
 
         if (Input.GetKey(KeyCode.K) && (cooldownTimer > attackCoolDown))
         {
-            float fireRate = 10.0f;
+            float localFireRate = fireRate;
 
             if (allowRapidFire)
             {
-                fireRate *= rapidFireRate;
+                localFireRate *= rapidFireRate;
             }
 
             switch (currentGunType)
             {
                 case GUN_TYPE.NORMAL:
                     attackCoolDown = attackCoolDownNormal;
-                    ShootNormal(normGunDirection, fireRate);
+                    ShootNormal(normGunDirection, localFireRate);
                     break;
 
                 case GUN_TYPE.MACHINE:
                     attackCoolDown = attackCoolDownMachine;
-                    ShootMachine(normGunDirection, fireRate);
+                    ShootMachine(normGunDirection, localFireRate);
                     break;
 
                 case GUN_TYPE.SPREAD:
                     attackCoolDown = attackCoolDownNormal;
-                    ShootSpread(normGunDirection, fireRate);
+                    ShootSpread(normGunDirection, localFireRate);
                     break;
 
                 case GUN_TYPE.FLAME:
                     attackCoolDown = attackCoolDownFlame;
-                    ShootFlame(normGunDirection, fireRate);
+                    ShootFlame(normGunDirection, localFireRate);
                     break;
 
                 case GUN_TYPE.LASER:
-                    attackCoolDown = attackCoolDownNormal;
-                    ShootLaser(normGunDirection, fireRate);
+                    attackCoolDown = attackCoolDownLaser;
+                    GenerateLaser(laserLength, laserSpacing);
+                    ShootLaser(normGunDirection, localFireRate, laserIndexList, laserLength);
                     break;
             }
 
@@ -135,9 +156,12 @@ public class gun : MonoBehaviour
 
             if (index >= 0)
             {
-                bullets[index].transform.position = shootLocation.transform.position;
-                bullet_direction.Normalize();
+                bullets[index].SetPosition(shootLocation.transform.position.x, shootLocation.transform.position.y);
+                bullets[index].SetOffsetPoint(new Vector3(0.0f, 0.0f));
                 bullets[index].SetSpeed(bullet_speed);
+                bullets[index].SetRotateSpeed(0.0f);
+                bullets[index].SetRadius(0.0f);
+                bullet_direction.Normalize();
 
                 if (bullet_direction.x == 0)
                 {
@@ -164,9 +188,12 @@ public class gun : MonoBehaviour
 
             if (index >= 0)
             {
-                bullets[index].transform.position = shootLocation.transform.position;
-                bullet_direction.Normalize();
+                bullets[index].SetPosition(shootLocation.transform.position.x, shootLocation.transform.position.y);
+                bullets[index].SetOffsetPoint(new Vector3(0.0f, 0.0f));
                 bullets[index].SetSpeed(bullet_speed);
+                bullets[index].SetRotateSpeed(0.0f);
+                bullets[index].SetRadius(0.0f);
+                bullet_direction.Normalize();
 
                 if (bullet_direction.x == 0)
                 {
@@ -190,16 +217,18 @@ public class gun : MonoBehaviour
         bool shoot_target = true;
         if (shoot_target)
         {
-            List<(int,float)> indexList = new List<(int, float)>();
-            float spread_shot_direction = -1.0f;
-            for (int i=0; i < numberOfBulletsShot; i++)
+            List<(int, float)> indexList = new List<(int, float)>();
+            float spread_shot_direction = -spreadShotDirection;
+            float spread_shot_delta = MathF.Abs(spread_shot_direction * 2.0f) / (numberOfBulletsShot - 1.0f);
+
+            for (int i = 0; i < numberOfBulletsShot; i++)
             {
                 int index = FindInActiveBullet(indexList);
 
                 if (index >= 0)
                 {
                     indexList.Add((index, spread_shot_direction));
-                    spread_shot_direction += 0.5f;
+                    spread_shot_direction += spread_shot_delta;
                 }
             }
 
@@ -207,9 +236,12 @@ public class gun : MonoBehaviour
             {
                 foreach ((int index, float spread_shot) in indexList)
                 {
-                    bullets[index].transform.position = shootLocation.transform.position;
-                    bullet_direction.Normalize();
+                    bullets[index].SetPosition(shootLocation.transform.position.x, shootLocation.transform.position.y);
+                    bullets[index].SetOffsetPoint(new Vector3(0.0f, 0.0f));
                     bullets[index].SetSpeed(bullet_speed);
+                    bullets[index].SetRotateSpeed(0.0f);
+                    bullets[index].SetRadius(0.0f);
+                    bullet_direction.Normalize();
 
                     if (bullet_direction.x == 0)
                     {
@@ -237,14 +269,32 @@ public class gun : MonoBehaviour
 
             if (index >= 0)
             {
-                bullets[index].SetPivotPoint(new Vector3(5.0f, 0.0f, 0.0f));
-                bullets[index].SetRotateSpeed(100.0f);
-                bullets[index].transform.position = shootLocation.transform.position;
-                bullet_direction.Normalize();
+                float local_radius = 1.0f;
+                float local_offset_x = 1.5f;
+                float local_offset_y = 1.5f;
+
+                float x_direction = (shootLocation.transform.position - parent.transform.position).x;
+                float y_direction = (shootLocation.transform.position - parent.transform.position).y;
+                if (x_direction < 0.0f)
+                {
+                    local_offset_x = -local_offset_x;
+                }
+
+                if (y_direction < 0.0f)
+                {
+                    local_offset_y = -local_offset_y;
+                }
+
+                bullets[index].SetPosition(parent.transform.position.x, parent.transform.position.y);
+                bullets[index].SetOffsetPoint(new Vector3(local_offset_x, 0.0f));
                 bullets[index].SetSpeed(bullet_speed);
+                bullets[index].SetRotateSpeed(10.0f);
+                bullets[index].SetRadius(local_radius);
+                bullet_direction.Normalize();
 
                 if (bullet_direction.x == 0)
                 {
+                    bullets[index].SetOffsetPoint(new Vector3(0.0f, local_offset_y));
                     bullets[index].SetDirection(0.0f, Mathf.Sign(bullet_direction.y));
                 }
                 else if (bullet_direction.y == 0)
@@ -253,15 +303,73 @@ public class gun : MonoBehaviour
                 }
                 else
                 {
+                    bullets[index].SetOffsetPoint(new Vector3(local_offset_x, local_offset_y));
                     bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), Mathf.Sign(bullet_direction.y));
                 }
             }
         }
     }
 
-    private void ShootLaser(Vector3 bullet_direction, float bullet_speed)
+    private void GenerateLaser(int numberOfBulletsShot, float laserSpacing)
     {
+        // deactivate the last run of bullets before collecting the next batch
+        if (laserIndexList.Count > 0)
+        {
+            foreach (var (index, spread) in laserIndexList)
+            {
+                bullets[index].Deactivate();
+            }
+        }
 
+        // gather the number of bullets to generate laser
+        laserIndexList.Clear();
+        float spread_shot_direction = 0.0f;
+        for (int i = 0; i < numberOfBulletsShot; i++)
+        {
+            int index = FindInActiveBullet(laserIndexList);
+
+            if (index >= 0)
+            {
+                laserIndexList.Add((index, spread_shot_direction));
+                spread_shot_direction += laserSpacing;
+            }
+        }
+    }
+
+    private void ShootLaser(Vector3 bullet_direction, float bullet_speed, List<(int, float)> indexList, int limit)
+    {
+        int numberOfBulletsShot = limit;
+        bool shoot_target = true;
+        if (shoot_target)
+        {
+            if (indexList.Count == numberOfBulletsShot)
+            {
+                foreach ((int index, float spread_shot) in indexList)
+                {
+                    bullets[index].SetPosition(shootLocation.transform.position.x, shootLocation.transform.position.y);
+                    bullets[index].SetSpeed(bullet_speed);
+                    bullets[index].SetRotateSpeed(0.0f);
+                    bullets[index].SetRadius(0.0f);
+                    bullet_direction.Normalize();
+
+                    if (bullet_direction.x == 0)
+                    {
+                        bullets[index].SetOffsetPoint(new Vector3(0.0f, spread_shot));
+                        bullets[index].SetDirection(0.0f, Mathf.Sign(bullet_direction.y));
+                    }
+                    else if (bullet_direction.y == 0)
+                    {
+                        bullets[index].SetOffsetPoint(new Vector3(spread_shot, 0.0f));
+                        bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), bullet_direction.y);
+                    }
+                    else
+                    {
+                        bullets[index].SetOffsetPoint(new Vector3(spread_shot, spread_shot));
+                        bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), Mathf.Sign(bullet_direction.y));
+                    }
+                }
+            }
+        }
     }
 
     private int FindInActiveBullet()

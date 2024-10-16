@@ -90,7 +90,7 @@ public class EntityMovement : MonoBehaviour
         else
         {
 
-            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(player.GetComponent<BoxCollider2D>()))
+            if ((player != null) && (gameObject.GetComponent<BoxCollider2D>().IsTouching(player.GetComponent<BoxCollider2D>())))
             {
                 PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
                 playerMovement.setPlayerHit(true);

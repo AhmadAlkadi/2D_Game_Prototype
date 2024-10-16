@@ -26,8 +26,10 @@ public class Turret_Targeting : MonoBehaviour
     public int number_of_bullets = 10;
     public float turret_angle_movement = 45.0f;
     public GameObject player;
+    public bool ForceRun = false;
 
-    [SerializeField] private TurretBullet turret_bullet;
+    [SerializeField] private GameObject turret_bullet;
+    private List<GameObject> pbullets = new List<GameObject>();
     private List<TurretBullet> bullets = new List<TurretBullet>();
     [SerializeField] private List<int> ignoreAngles;
     private GameObject shootLocation;
@@ -52,20 +54,24 @@ public class Turret_Targeting : MonoBehaviour
 
         for (int i = 0; i < number_of_bullets; i++)
         {
-            bullets.Add(Instantiate(turret_bullet));
-            //turret_bullet.setPlayer(ref player);
+            var pBullet = Instantiate(turret_bullet);
+            pbullets.Add(pBullet);
+
+            var newBullet = pBullet.GetComponentInChildren<TurretBullet>();
+            bullets.Add(newBullet);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Health <= 0)
+        if((Health <= 0) && (ForceRun == false))
         {
             gameObject.SetActive(false);
 
         }
-        else { 
+        else
+        { 
             timeToShootSeconds += Time.deltaTime;
             var this_obj_position = GetComponent<Transform>();
             var direction = this_obj_position.transform.position - target_position.transform.position;
@@ -137,9 +143,12 @@ public class Turret_Targeting : MonoBehaviour
             if (index >= 0)
             {
                 bullets[index].setPlayer(ref player);
-                bullets[index].transform.position = shootLocation.transform.position;
-                bullet_direction.Normalize();
+                bullets[index].SetPosition(shootLocation.transform.position.x, shootLocation.transform.position.y);
+                bullets[index].SetOffsetPoint(new Vector3(0.0f, 0.0f));
                 bullets[index].SetSpeed(bullet_speed);
+                bullets[index].SetRotateSpeed(0.0f);
+                bullets[index].SetRadius(0.0f);
+                bullet_direction.Normalize();
 
                 if (bullet_direction.x == 0)
                 {

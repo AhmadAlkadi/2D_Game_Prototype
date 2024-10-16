@@ -310,6 +310,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2788126913882187623, guid: b346dbd006fcc044888740e394640412, type: 3}
+      propertyPath: turret_bullet
+      value: 
+      objectReference: {fileID: 1595935538623738303, guid: 9b29b595d211e81429afa97509718385, type: 3}
     - target: {fileID: 4367010346639838346, guid: b346dbd006fcc044888740e394640412, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.4873166

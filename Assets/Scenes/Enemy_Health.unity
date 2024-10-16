@@ -139,6 +139,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2788126913882187623, guid: b346dbd006fcc044888740e394640412, type: 3}
+      propertyPath: turret_bullet
+      value: 
+      objectReference: {fileID: 1595935538623738303, guid: 9b29b595d211e81429afa97509718385, type: 3}
+    - target: {fileID: 2788126913882187623, guid: b346dbd006fcc044888740e394640412, type: 3}
       propertyPath: currentGunType
       value: 2
       objectReference: {fileID: 0}
@@ -366,7 +370,7 @@ PrefabInstance:
     - target: {fileID: 287033908782591967, guid: ea931726f37733c44a1bc69db7452d94, type: 3}
       propertyPath: turret_bullet
       value: 
-      objectReference: {fileID: 3138108346167067846, guid: 9b29b595d211e81429afa97509718385, type: 3}
+      objectReference: {fileID: 1595935538623738303, guid: 9b29b595d211e81429afa97509718385, type: 3}
     - target: {fileID: 287033908782591967, guid: ea931726f37733c44a1bc69db7452d94, type: 3}
       propertyPath: target_position
       value: 
@@ -576,6 +580,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 84082934}
+    - target: {fileID: 287033908782591967, guid: ea931726f37733c44a1bc69db7452d94, type: 3}
+      propertyPath: turret_bullet
+      value: 
+      objectReference: {fileID: 1595935538623738303, guid: 9b29b595d211e81429afa97509718385, type: 3}
     - target: {fileID: 287033908782591967, guid: ea931726f37733c44a1bc69db7452d94, type: 3}
       propertyPath: target_position
       value: 
