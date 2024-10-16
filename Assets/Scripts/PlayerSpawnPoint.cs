@@ -40,6 +40,11 @@ public class PlayerSpawnPoint : MonoBehaviour
             invTimer = 0;
             playerLife -= 1;
             lifeCounter.text = playerLife.ToString();
+
+            var playerGun = playerMovement.GetComponentInChildren<gun>();
+            playerGun.SetGun(gun.GUN_TYPE.NORMAL);
+            playerGun.SetRapidFire(false);
+
             playerMovement.setStartPosition(this.transform.position);
             playerMovement.setPlayerHit(false);
             playerMovement.gameObject.SetActive(true);
