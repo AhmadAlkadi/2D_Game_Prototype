@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public class gun : MonoBehaviour
@@ -73,6 +74,7 @@ public class gun : MonoBehaviour
 
             var bulletChild = newBullet.transform.GetChild(0).gameObject.GetComponent<TurretBullet>();
             bulletChild.gameObject.layer = LayerMask.NameToLayer("Player");
+            bulletChild.gameObject.GetComponent<CircleCollider2D>().excludeLayers |= (1 << LayerMask.NameToLayer("Player")) ;
             bullets.Add(bulletChild);
         }
     }

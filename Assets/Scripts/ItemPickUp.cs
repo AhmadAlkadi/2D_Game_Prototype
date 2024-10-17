@@ -30,25 +30,31 @@ public class ItemPickUp : MonoBehaviour
                 {
                     case GUN_TYPE.NORMAL:
                         currentGun.SetGun(gun.GUN_TYPE.NORMAL);
+                        gameObject.SetActive(false);
                         break;
                     case GUN_TYPE.MACHINE:
                         currentGun.SetGun(gun.GUN_TYPE.MACHINE);
+                        gameObject.SetActive(false);
                         break;
 
                     case GUN_TYPE.SPREAD:
                         currentGun.SetGun(gun.GUN_TYPE.SPREAD);
+                        gameObject.SetActive(false);
                         break;
 
                     case GUN_TYPE.FLAME:
                         currentGun.SetGun(gun.GUN_TYPE.FLAME);
+                        gameObject.SetActive(false);
                         break;
 
                     case GUN_TYPE.LASER:
                         currentGun.SetGun(gun.GUN_TYPE.LASER);
+                        gameObject.SetActive(false);
                         break;
 
                     case GUN_TYPE.RAPID:
                         currentGun.SetRapidFire(true);
+                        gameObject.SetActive(false);
                         break;
                 }
             }

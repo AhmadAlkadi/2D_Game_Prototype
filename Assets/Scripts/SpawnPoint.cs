@@ -51,7 +51,6 @@ public class SpawnPoint : MonoBehaviour
             var currentEnemy = listOfEnemy[enemyIndex];
             currentEnemy.gameObject.SetActive(true);
             randomValue = Random.value;
-            Debug.Log(randomValue);
             if (randomValue < randomValueSet)
             {
                 currentEnemy.setEdgeWalkBack(1);
