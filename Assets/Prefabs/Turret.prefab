@@ -219,15 +219,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f31f9cbfe338934695cb59681e8bfd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target_position: {fileID: 6294442478867253198, guid: b346dbd006fcc044888740e394640412, type: 3}
+  target_position: {fileID: 0}
   detection_distance: 5
   bullet_tts_seconds: 0.5
   bullet_speed: 4
   number_of_bullets: 10
   turret_angle_movement: 45
-  player: {fileID: 6294442478867253198, guid: b346dbd006fcc044888740e394640412, type: 3}
+  player: {fileID: 0}
   ForceRun: 0
-  turret_bullet: {fileID: 3138108346167067846, guid: 9b29b595d211e81429afa97509718385, type: 3}
+  turret_bullet: {fileID: 1595935538623738303, guid: 9b29b595d211e81429afa97509718385, type: 3}
   ignoreAngles: 
 --- !u!50 &-8069095338669017191
 Rigidbody2D:

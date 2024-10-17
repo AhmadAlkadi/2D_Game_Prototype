@@ -105,7 +105,7 @@ public class TurretBullet : MonoBehaviour
     {
         if (player != null)
         {
-            if (gameObject.GetComponent<CircleCollider2D>().IsTouching(player.GetComponent<BoxCollider2D>()))
+            if (collision.gameObject.layer == 6)
             {
                 PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
                 playerMovement.setPlayerHit(true);
@@ -117,7 +117,6 @@ public class TurretBullet : MonoBehaviour
         {
             if (collision.gameObject.layer == 8)
             {
-                Debug.Log(collision.name);
                 EntityMovement entityMovement = collision.gameObject.GetComponent<EntityMovement>();
                 entityMovement.setFootSoldierHit(true);
                 hit = true;

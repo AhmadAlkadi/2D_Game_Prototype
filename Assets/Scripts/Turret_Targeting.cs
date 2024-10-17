@@ -42,7 +42,6 @@ public class Turret_Targeting : MonoBehaviour
     {
         this.hit = hit;
         Health -= 1;
-        Debug.Log(Health);
     }
 
     // Start is called before the first frame update
@@ -150,18 +149,25 @@ public class Turret_Targeting : MonoBehaviour
                 bullets[index].SetRadius(0.0f);
                 bullet_direction.Normalize();
 
-                if (bullet_direction.x == 0)
+                if (Mathf.Abs(bullet_direction.x) <= 0.001f)
                 {
-                    bullets[index].SetDirection(0.0f, Mathf.Sign(bullet_direction.y));
-                }
-                else if (bullet_direction.y == 0)
-                {
-                    bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), 0.0f);
+                    bullet_direction.x = 0.0f;
                 }
                 else
                 {
-                    bullets[index].SetDirection(Mathf.Sign(bullet_direction.x), Mathf.Sign(bullet_direction.y));
+                    bullet_direction.x = Mathf.Sign(bullet_direction.x);
                 }
+
+                if (Mathf.Abs(bullet_direction.y) <= 0.001f)
+                {
+                    bullet_direction.y = 0.0f;
+                }
+                else
+                {
+                    bullet_direction.y = Mathf.Sign(bullet_direction.y);
+                }
+
+                bullets[index].SetDirection(bullet_direction.x, bullet_direction.y);
             }
         }
     }
