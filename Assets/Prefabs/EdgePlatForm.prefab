@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 4496340764404144572}
   - component: {fileID: 3316664557776153482}
   m_Layer: 7
-  m_Name: RightEdgeColider
+  m_Name: LeftEdgeColider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 5250439252166377540}
   - component: {fileID: 1044947027733552085}
   m_Layer: 7
-  m_Name: RightLeftColider
+  m_Name: RightEdgeColider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

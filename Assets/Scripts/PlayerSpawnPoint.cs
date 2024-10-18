@@ -1,8 +1,23 @@
+/***************************************************************
+*file: Turret_Targeting.cs
+*author: Sean Butler
+*author: Ahmad Alkadi
+*class: CS 4700 – Game Development
+*assignment: program 3
+*date last modified: 10/6/2024
+*
+*purpose: Allows the player to spawn when they die
+*
+*References:
+*https://docs.unity3d.com/ScriptReference/index.html
+*
+****************************************************************/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerSpawnPoint : MonoBehaviour
 {
@@ -12,6 +27,11 @@ public class PlayerSpawnPoint : MonoBehaviour
     public float invTimerLimit = 1f;
     public TextMeshProUGUI lifeCounter;
     PlayerMovement playerMovement;
+
+    public void SetDeath(int death)
+    {
+        playerLife = death;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +43,11 @@ public class PlayerSpawnPoint : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (playerMovement.gameObject.activeSelf == false && playerLife == 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1, LoadSceneMode.Single);
+        }
+
         invTimer += Time.deltaTime;
         if (invTimer > invTimerLimit)
         {

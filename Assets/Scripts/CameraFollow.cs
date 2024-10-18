@@ -1,3 +1,19 @@
+/***************************************************************
+*file: Turret_Targeting.cs
+*author: Sean Butler
+*author: Ahmad Alkadi
+*class: CS 4700 – Game Development
+*assignment: program 3
+*date last modified: 10/6/2024
+*
+*purpose: the camera will follow the player and it will have bounds to not allow him to leave out of the area
+*
+*References:
+*https://docs.unity3d.com/ScriptReference/index.html
+*Creator name: Antarsoft, link of the video that was used:
+*https://www.youtube.com/watch?app=desktop&v=pPv8Row2bT0
+*
+****************************************************************/
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.TerrainTools;

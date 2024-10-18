@@ -11,6 +11,7 @@
 *References:
 *Creator name: Pandemonium, link of the video that was used: https://www.youtube.com/watch?v=PUpC44Q64zY&list=PLgOEwFbvGm5o8hayFB6skAfa8Z-mw4dPV&index=4
 *Creator name: AdamCYounis, link of the video that was used: https://www.youtube.com/watch?v=0-c3ErDzrh8
+*https://docs.unity3d.com/ScriptReference/index.html
 *
 ****************************************************************/
 using System;
@@ -32,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private bool hit;
     private Vector3 startPosition;
     private bool invincibility;
-    public GameObject turrentEnemy;
+    public GameObject edgeBottomColid;
 
     public bool grounded;
 
@@ -63,6 +64,11 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeBottomColid.GetComponent<BoxCollider2D>()))
+        {
+            hit = true;
+        }
+
         if (invincibility == false)
         {
             if (hit == false)

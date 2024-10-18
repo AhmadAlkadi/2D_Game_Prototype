@@ -1,3 +1,17 @@
+/***************************************************************
+*file: Turret_Targeting.cs
+*author: Sean Butler
+*author: Ahmad Alkadi
+*class: CS 4700 – Game Development
+*assignment: program 3
+*date last modified: 10/6/2024
+*
+*purpose: Enemy movement behaviour
+*
+*References:
+*https://docs.unity3d.com/ScriptReference/index.html
+*
+****************************************************************/
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -10,6 +24,7 @@ public class EntityMovement : MonoBehaviour
     private GameObject cameraRightColid;
     private GameObject edgeRightColid;
     private GameObject edgeLeftColid;
+    private GameObject edgeBottomColid;
     private float jumpHight;
     private GameObject player;
     private float speed;
@@ -56,6 +71,11 @@ public class EntityMovement : MonoBehaviour
         edgeLeftColid = newEdgeLeftColid;
     }
 
+    public void setEdgeBottomColid(ref GameObject newEdgeBottomColid)
+    {
+        edgeBottomColid = newEdgeBottomColid;
+    }
+
     public void setCameraRightColid(ref GameObject extraCameraRightColid)
     {
         cameraRightColid = extraCameraRightColid;
@@ -89,6 +109,10 @@ public class EntityMovement : MonoBehaviour
         }
         else
         {
+            if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeBottomColid.GetComponent<BoxCollider2D>()))
+            {
+                hit = true;
+            }
 
             if ((player != null) && (gameObject.GetComponent<BoxCollider2D>().IsTouching(player.GetComponent<BoxCollider2D>())))
             {
@@ -98,7 +122,7 @@ public class EntityMovement : MonoBehaviour
 
             if (cameraLeftColid != null)
             {
-                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeRightColid.GetComponent<BoxCollider2D>()))
+                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeLeftColid.GetComponent<BoxCollider2D>()))
                 {
                     if (edgeWalkBack == 0)
                     {
@@ -113,7 +137,7 @@ public class EntityMovement : MonoBehaviour
                     }
                 }
 
-                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeLeftColid.GetComponent<BoxCollider2D>()))
+                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeRightColid.GetComponent<BoxCollider2D>()))
                 {
                     rightMove = false;
                     transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);

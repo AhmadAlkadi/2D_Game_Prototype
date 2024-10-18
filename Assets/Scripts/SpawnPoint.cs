@@ -1,3 +1,17 @@
+/***************************************************************
+*file: Turret_Targeting.cs
+*author: Sean Butler
+*author: Ahmad Alkadi
+*class: CS 4700 – Game Development
+*assignment: program 3
+*date last modified: 10/6/2024
+*
+*purpose: Enemies will spawn from this script, and when they die they this will allow them to spawn again
+*
+*References:
+*https://docs.unity3d.com/ScriptReference/index.html
+*
+****************************************************************/
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +21,7 @@ public class SpawnPoint : MonoBehaviour
     public GameObject cameraRightColid;
     public GameObject edgeRightColid;
     public GameObject edgeLeftColid;
+    public GameObject edgeBottomColid;
     public GameObject player;
     public float jumpHight = 15;
     public float speed = 3;
@@ -32,7 +47,7 @@ public class SpawnPoint : MonoBehaviour
             newEnemy.setCameraRightColid(ref cameraRightColid);
             newEnemy.setEdgeRightColid(ref edgeRightColid);
             newEnemy.setEdgeLeftColid(ref edgeLeftColid);
-            //var newEnemyRidgid = newEnemy.GetComponent<Rigidbody2D>();
+            newEnemy.setEdgeBottomColid(ref edgeBottomColid);
             newEnemy.gameObject.SetActive(false);
             listOfEnemy.Add(newEnemy);
         }
