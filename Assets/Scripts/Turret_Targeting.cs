@@ -9,7 +9,7 @@
 *purpose: The turrent will target the player and shoot
 *
 *References:
-*N/A
+*https://docs.unity3d.com/ScriptReference/index.html
 *
 ****************************************************************/
 
