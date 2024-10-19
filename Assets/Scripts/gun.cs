@@ -22,6 +22,7 @@ public class gun : MonoBehaviour
 {
     public enum GUN_TYPE {NORMAL, MACHINE, SPREAD, FLAME, LASER };
     public GUN_TYPE currentGunType = GUN_TYPE.MACHINE;
+    public GUN_TYPE forceGunType = GUN_TYPE.MACHINE;
 
     public float attackCoolDownNormal = 0.5f;
     public float attackCoolDownMachine = 0.07f;
@@ -34,6 +35,7 @@ public class gun : MonoBehaviour
     [Range(0.0f, 2.0f)]
     public float spreadShotDirection = 1.0f;
     public bool allowRapidFire = false;
+    public bool forceWeapon = false;
 
     public GameObject[] bulletObjects { get; private set; }
     public int numberOfBullets = 20;
@@ -126,6 +128,11 @@ public class gun : MonoBehaviour
             if (allowRapidFire)
             {
                 localFireRate *= rapidFireRate;
+            }
+
+            if (forceWeapon)
+            {
+                currentGunType = forceGunType;
             }
 
             switch (currentGunType)

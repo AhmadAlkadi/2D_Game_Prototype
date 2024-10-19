@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -53,6 +52,23 @@ public class PlayerMovement : MonoBehaviour
     public void setInvincibility(bool invincibility)
     {
         this.invincibility = invincibility;
+
+        int layerEnemy = LayerMask.NameToLayer("Enemy");
+        int layerTurret = LayerMask.NameToLayer("Turrent");
+        int layerBullet = LayerMask.NameToLayer("Bullet");
+
+        if (invincibility == true)
+        {
+            body.excludeLayers |= (1 << layerEnemy);
+            body.excludeLayers |= (1 << layerTurret);
+            body.excludeLayers |= (1 << layerBullet);
+        }
+        else
+        {
+            body.excludeLayers &= ~(1 << layerEnemy);
+            body.excludeLayers &= ~(1 << layerTurret);
+            body.excludeLayers &= ~(1 << layerBullet);
+        }
     }
 
     // Start is called before the first frame update
@@ -132,12 +148,15 @@ public class PlayerMovement : MonoBehaviour
     {
         CheckGround();
 
-        if(grounded && xInput == 0 && yInput == 0) { body.velocity *= drag; }
+        if(grounded && xInput == 0 && yInput == 0)
+        {
+            body.velocity *= drag;
+        }
     }
 
     void CheckGround()
     {
-        grounded = Physics2D.OverlapAreaAll(groundCheck.bounds.min, groundCheck.bounds.max,groundMask).Length > 0;
+        grounded = Physics2D.OverlapAreaAll(groundCheck.bounds.min, groundCheck.bounds.max, groundMask).Length > 0;
     }
 
     public bool canAttak()
