@@ -27,6 +27,7 @@ public class PlayerSpawnPoint : MonoBehaviour
     public float invTimerLimit = 1f;
     public TextMeshProUGUI lifeCounter;
     PlayerMovement playerMovement;
+    public float spawnYOffset = 3.0f;
 
     public void SetDeath(int death)
     {
@@ -62,6 +63,8 @@ public class PlayerSpawnPoint : MonoBehaviour
 
         if (playerMovement.gameObject.activeSelf == false && playerLife != 0)
         {
+            transform.position = new Vector3(playerMovement.gameObject.transform.position.x, playerMovement.gameObject.transform.position.y + spawnYOffset);
+
             invTimer = 0;
             playerLife -= 1;
             lifeCounter.text = playerLife.ToString();

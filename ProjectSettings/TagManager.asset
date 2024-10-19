@@ -17,8 +17,8 @@ TagManager:
   - Camera
   - Turrent
   - Bullet
-  - 
-  - 
+  - CameraColliders
+  - PlatformCollider
   - 
   - 
   - 

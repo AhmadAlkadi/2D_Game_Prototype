@@ -226,7 +226,9 @@ MonoBehaviour:
   number_of_bullets: 10
   turret_angle_movement: 45
   player: {fileID: 0}
+  enable: 1
   ForceRun: 0
+  Health: 8
   turret_bullet: {fileID: 1595935538623738303, guid: 9b29b595d211e81429afa97509718385, type: 3}
   ignoreAngles: 
 --- !u!50 &-8069095338669017191
@@ -255,7 +257,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 7
 --- !u!61 &1765716960549893819
 BoxCollider2D:
   m_ObjectHideFlags: 0

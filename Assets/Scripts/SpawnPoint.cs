@@ -27,7 +27,9 @@ public class SpawnPoint : MonoBehaviour
     public float speed = 3;
     public EntityMovement enemy;
     public int numberOfEnemy = 1;
-    public float delay = 1f;
+    public float delayMin = 1.0f;
+    public float delayMax = 3.0f;
+    private float delay = 1.0f;
     private List<EntityMovement> listOfEnemy;
     private float frameTime;
     private float randomValue;
@@ -63,6 +65,8 @@ public class SpawnPoint : MonoBehaviour
         }
         if (enemyIndex > -1 && frameTime > delay)
         {
+            delay = (Random.value % (delayMax - delayMin)) + delayMin;
+
             var currentEnemy = listOfEnemy[enemyIndex];
             currentEnemy.gameObject.SetActive(true);
             randomValue = Random.value;

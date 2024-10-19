@@ -32,6 +32,8 @@ public class EntityMovement : MonoBehaviour
     private bool rightMove;
     private new Rigidbody2D rigidbody;
     private bool hit = false;
+    private bool isLeftEdgeTouched = false;
+    private bool isRightEdgeTouched = false;
 
 
     private Vector3 startPosition;
@@ -91,12 +93,24 @@ public class EntityMovement : MonoBehaviour
         startPosition = startPos;
     }
 
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.name == "LeftEdgeColider")
+        {
+            edgeLeftColid = collision.gameObject;
+            isLeftEdgeTouched = true;
+        }
+        else if (collision.name == "RightEdgeColider")
+        {
+            edgeRightColid = collision.gameObject;
+            isRightEdgeTouched = true;
+        }
+    }
+
     void Start()
     {
         gameObject.transform.position = startPosition;
     }
-
-    
 
     void Update()
     {
@@ -122,8 +136,10 @@ public class EntityMovement : MonoBehaviour
 
             if (cameraLeftColid != null)
             {
-                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeLeftColid.GetComponent<BoxCollider2D>()))
+                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeLeftColid.GetComponent<BoxCollider2D>()) || isLeftEdgeTouched)
                 {
+                    isLeftEdgeTouched = false;
+
                     if (edgeWalkBack == 0)
                     {
                         rightMove = true;
@@ -137,7 +153,7 @@ public class EntityMovement : MonoBehaviour
                     }
                 }
 
-                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeRightColid.GetComponent<BoxCollider2D>()))
+                if (gameObject.GetComponent<BoxCollider2D>().IsTouching(edgeRightColid.GetComponent<BoxCollider2D>()) || isRightEdgeTouched)
                 {
                     rightMove = false;
                     transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);

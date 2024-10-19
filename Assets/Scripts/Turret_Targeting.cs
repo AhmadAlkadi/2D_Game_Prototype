@@ -26,7 +26,9 @@ public class Turret_Targeting : MonoBehaviour
     public int number_of_bullets = 10;
     public float turret_angle_movement = 45.0f;
     public GameObject player;
+    public bool enable = true;
     public bool ForceRun = false;
+    public int Health = 8;
 
     [SerializeField] private GameObject turret_bullet;
     private List<GameObject> pbullets = new List<GameObject>();
@@ -36,12 +38,14 @@ public class Turret_Targeting : MonoBehaviour
     private int last_fixed_rot = 0;
     private float timeToShootSeconds = 0.0f;
     private bool hit;
-    private int Health = 8;
 
     public void setTurrentHit(bool hit)
     {
-        this.hit = hit;
-        Health -= 1;
+        if (enable)
+        {
+            this.hit = hit;
+            Health -= 1;
+        }
     }
 
     // Start is called before the first frame update
@@ -90,9 +94,12 @@ public class Turret_Targeting : MonoBehaviour
 
             if (distance < detection_distance)
             {
-                Vector3 bullet_direction = shootLocation.transform.position - this_obj_position.transform.position;
-                bool shoot_target = CheckShootTarget();
-                ShootTarget(bullet_direction, shoot_target);
+                if (enable)
+                {
+                    Vector3 bullet_direction = shootLocation.transform.position - this_obj_position.transform.position;
+                    bool shoot_target = CheckShootTarget();
+                    ShootTarget(bullet_direction, shoot_target);
+                }
             }
 
             if (allow_rotation)
