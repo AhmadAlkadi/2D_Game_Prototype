@@ -1252,6 +1252,10 @@ PrefabInstance:
       propertyPath: currentGunType
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3805125123345013462, guid: b346dbd006fcc044888740e394640412, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4367010346639838346, guid: b346dbd006fcc044888740e394640412, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.1244755
